@@ -1,0 +1,81 @@
+
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Metro DnD Bestiář</title>
+    <style>
+        body { background-color: #111; color: #eee; font-family: Arial, sans-serif; margin: 0; padding: 20px; }
+        h1 { color: #4CAF50; }
+        h2 { color: #FFA500; margin-top: 30px; }
+        .card { background: #222; padding: 15px; border-radius: 10px; margin-bottom: 15px; cursor: pointer; }
+        .card:hover { background: #333; }
+        .details { display: none; margin-top: 10px; }
+        img { max-width: 100%; border-radius: 8px; }
+    </style>
+</head>
+<body>
+
+<h1>Metro DnD - Bestiář</h1>
+<p>Klikni na kartu pro zobrazení detailů. Pro přidání nové karty stačí přidat nový obrázek do složky <code>img/</code> a přidat data do pole v HTML kódu.</p>
+
+<div id="bestiary"></div>
+
+<script>
+const data = [
+    {
+        "name": "Mutovaní psi",
+        "type": "Bestie",
+        "danger": "Nízká až střední",
+        "desc": "Divocí, zuřiví a rychlí. Obvykle útočí ve smečkách.",
+        "loot": "Kosti, maso, kůže",
+        "tip": "Dá se odlákat jídlem nebo zabít na dálku.",
+        "img": "img/mutant_dog.jpg"
+    },
+    {
+        "name": "Lehčí bandité",
+        "type": "Lidé",
+        "danger": "Nízká až střední",
+        "desc": "Špatně organizovaní, improvizovaně vyzbrojení.",
+        "loot": "Levné zbraně, munice, jídlo",
+        "tip": "Lze je obejít nebo zastrašit.",
+        "img": "img/bandit.jpg"
+    },
+    {
+        "name": "Karim (Boss)",
+        "type": "Bossové",
+        "danger": "Vysoká",
+        "desc": "Fanatický vůdce banditů, krutý a mazaný.",
+        "loot": "Speciální zbraň, mapa, klíče od stanice",
+        "tip": "Krytí a spolupráce jsou klíčem.",
+        "img": "img/karim.jpg"
+    }
+];
+
+const container = document.getElementById("bestiary");
+
+for (let entry of data) {
+    let card = document.createElement("div");
+    card.className = "card";
+
+    card.innerHTML = `<h2>${entry.name} (${entry.type})</h2>
+                      <div class='details'>
+                        <img src='${entry.img}' alt='${entry.name}'>
+                        <p><strong>Nebezpečnost:</strong> ${entry.danger}</p>
+                        <p><strong>Popis:</strong> ${entry.desc}</p>
+                        <p><strong>Loot:</strong> ${entry.loot}</p>
+                        <p><strong>Tip:</strong> ${entry.tip}</p>
+                      </div>`;
+
+    card.onclick = () => {
+        const details = card.querySelector('.details');
+        details.style.display = details.style.display === 'block' ? 'none' : 'block';
+    }
+
+    container.appendChild(card);
+}
+</script>
+
+</body>
+</html>
