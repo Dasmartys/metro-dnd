@@ -8,7 +8,9 @@
     <style>
         body { background-color: #111; color: #eee; font-family: Arial, sans-serif; margin: 0; padding: 20px; }
         h1 { color: #4CAF50; }
-        h2 { color: #FFA500; margin-top: 30px; }
+        .filter { margin-bottom: 20px; }
+        .filter button { margin-right: 5px; padding: 10px; background-color: #333; color: #eee; border: none; border-radius: 5px; cursor: pointer; }
+        .filter button:hover { background-color: #555; }
         .card { background: #222; padding: 15px; border-radius: 10px; margin-bottom: 15px; cursor: pointer; }
         .card:hover { background: #333; }
         .details { display: none; margin-top: 10px; }
@@ -17,49 +19,55 @@
 </head>
 <body>
 
-<h1>Metro DnD - Bestiář</h1>
-<p>Klikni na kartu pro zobrazení detailů. Pro přidání nové karty stačí přidat nový obrázek do složky <code>img/</code> a přidat data do pole v HTML kódu.</p>
+<h1>Metro DnD - Bestiář a Kniha postav</h1>
+<p>Klikni na kartu pro zobrazení detailů. Pomocí tlačítek můžeš filtrovat kategorie.</p>
+
+<div class="filter">
+    <button onclick="filterCategory('Vše')">Vše</button>
+    <button onclick="filterCategory('Bestie')">🐾 Bestie</button>
+    <button onclick="filterCategory('Nepřítel')">🔫 Nepřítel</button>
+    <button onclick="filterCategory('Boss')">💀 Bossové</button>
+    <button onclick="filterCategory('Neutrál')">✋ Neutrálové</button>
+    <button onclick="filterCategory('Hráč')">🎮 Hráči</button>
+    <button onclick="filterCategory('Hodný')">🤝 Hodná NPC</button>
+    <button onclick="filterCategory('Neidentifikovatelné')">❔ Neidentifikovatelné</button>
+</div>
 
 <div id="bestiary"></div>
 
 <script>
 const data = [
-    {
-        "name": "Mutovaní psi",
-        "type": "Bestie",
-        "danger": "Nízká až střední",
-        "desc": "Divocí, zuřiví a rychlí. Obvykle útočí ve smečkách.",
-        "loot": "Kosti, maso, kůže",
-        "tip": "Dá se odlákat jídlem nebo zabít na dálku.",
-        "img": "img/mutant_dog.jpg"
-    },
-    {
-        "name": "Lehčí bandité",
-        "type": "Lidé",
-        "danger": "Nízká až střední",
-        "desc": "Špatně organizovaní, improvizovaně vyzbrojení.",
-        "loot": "Levné zbraně, munice, jídlo",
-        "tip": "Lze je obejít nebo zastrašit.",
-        "img": "img/bandit.jpg"
-    },
-    {
-        "name": "Karim (Boss)",
-        "type": "Bossové",
-        "danger": "Vysoká",
-        "desc": "Fanatický vůdce banditů, krutý a mazaný.",
-        "loot": "Speciální zbraň, mapa, klíče od stanice",
-        "tip": "Krytí a spolupráce jsou klíčem.",
-        "img": "img/karim.jpg"
-    }
+    { name: "Mutovaní psi", type: "Bestie", category: "Bestie", danger: "Nízká až střední", desc: "Divocí, zuřiví a rychlí.", loot: "Kosti, maso, kůže", tip: "Odvést jídlem nebo zabít na dálku.", img: "img/mutant_dog.jpg" },
+    { name: "Lehčí bandité", type: "Lidé", category: "Nepřítel", danger: "Nízká až střední", desc: "Improvizovaní bandité.", loot: "Levné zbraně, munice", tip: "Zastrašit nebo obejít.", img: "img/bandit.jpg" },
+    { name: "Karim", type: "Boss", category: "Boss", danger: "Vysoká", desc: "Fanatický vůdce.", loot: "Speciální zbraň, mapa", tip: "Spolupráce klíčem.", img: "img/karim.jpg" },
+    { name: "Medvěd", type: "Boss", category: "Boss", danger: "Extrémní", desc: "Obrovský mutant.", loot: "Maso, trofej", tip: "Těžké zbraně a taktika.", img: "img/bear.jpg" },
+    { name: "Leonid Karelin", type: "Hráč/NPC", category: "Hodný", danger: "Žádná", desc: "Silný válečník, přítel.", loot: "-", tip: "Věrný spojencům.", img: "img/leonid.jpg" },
+    { name: "Evangelika Karelinová", type: "Hodný NPC", category: "Hodný", danger: "Žádná", desc: "Lékárnice a obchodnice.", loot: "-", tip: "Vždy pomůže.", img: "img/evangelika.jpg" },
+    { name: "Starý Cetkář", type: "Hodný NPC", category: "Hodný", danger: "Žádná", desc: "Zemřel, moudrý stařec.", loot: "-", tip: "Vzpomínka.", img: "img/cetkar.jpg" },
+    { name: "Sofie", type: "Neutrál", category: "Neutrál", danger: "Nízká", desc: "Bývalá vědkyně.", loot: "-", tip: "Zachráněná.", img: "img/sofie.jpg" },
+    { name: "Ark", type: "Hráč", category: "Hráč", danger: "Žádná", desc: "Tichý stratég.", loot: "-", tip: "Lídr a ochránce.", img: "img/ark.jpg" },
+    { name: "Orákulum", type: "Neidentifikovatelné", category: "Neidentifikovatelné", danger: "???", desc: "Záhadná entita.", loot: "???", tip: "Nepředvídatelná.", img: "img/orakulum.jpg" }
 ];
+
+function filterCategory(category) {
+    const cards = document.querySelectorAll('.card');
+    cards.forEach(card => {
+        if (category === 'Vše' || card.dataset.category === category) {
+            card.style.display = 'block';
+        } else {
+            card.style.display = 'none';
+        }
+    });
+}
 
 const container = document.getElementById("bestiary");
 
-for (let entry of data) {
-    let card = document.createElement("div");
+data.forEach(entry => {
+    const card = document.createElement("div");
     card.className = "card";
+    card.dataset.category = entry.category;
 
-    card.innerHTML = `<h2>${entry.name} (${entry.type})</h2>
+    card.innerHTML = `<h2>${entry.name} (${entry.category})</h2>
                       <div class='details'>
                         <img src='${entry.img}' alt='${entry.name}'>
                         <p><strong>Nebezpečnost:</strong> ${entry.danger}</p>
@@ -74,7 +82,7 @@ for (let entry of data) {
     }
 
     container.appendChild(card);
-}
+});
 </script>
 
 </body>
