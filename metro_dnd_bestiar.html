@@ -1,0 +1,92 @@
+
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Metro DnD Bestiář</title>
+    <style>
+        body {
+            background-color: #111;
+            color: #ddd;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #222;
+            padding: 20px;
+            text-align: center;
+            font-size: 24px;
+            color: #0f0;
+        }
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            padding: 20px;
+        }
+        .card {
+            background-color: #333;
+            border-radius: 8px;
+            padding: 15px;
+            width: 300px;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.2);
+            cursor: pointer;
+        }
+        .card h3 {
+            color: #0f0;
+            margin-top: 0;
+        }
+        .details {
+            display: none;
+            margin-top: 10px;
+        }
+        .show .details {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <header>Metro DnD - Bestiář a Postavy</header>
+    <div class="container" id="cardsContainer"></div>
+    <script>
+const data = [
+{ name: "Mutovaní psi", category: "Bestie", desc: "Divocí, zuřiví a rychlí.", danger: "Nízká až střední", loot: "Kosti, maso, kůže", tip: "Odvést jídlem nebo zabít na dálku." },
+{ name: "Medvěd", category: "Boss", desc: "Masivní mutovaný medvěd.", danger: "Extrémní", loot: "Maso, trofej", tip: "Těžké zbraně a taktika." },
+{ name: "Karim", category: "Boss", desc: "Fanatický vůdce banditů.", danger: "Vysoká", loot: "-", tip: "Spolupráce klíčem", weapon: "AK-47" },
+{ name: "Lehčí bandité", category: "Nepřítel", desc: "Improvizovaní bandité (nízké HP a DC).", danger: "Nízká", loot: "-", tip: "Zastrašit nebo obejít.", weapon: "AK-47" },
+{ name: "Střední bandité", category: "Nepřítel", desc: "Zkušení bandité (střední HP a DC).", danger: "Střední", loot: "-", tip: "Zastrašit nebo obejít.", weapon: "AK-47" },
+{ name: "Těžcí bandité", category: "Nepřítel", desc: "Nejnebezpečnější bandité (vysoké HP a DC).", danger: "Vysoká", loot: "-", tip: "Zastrašit nebo obejít.", weapon: "PKM / RPK" },
+{ name: "Leonid Karelin", category: "Hodný", desc: "Silný válečník a přítel.", danger: "Žádná", loot: "-", tip: "Věrný spojencům." },
+{ name: "Evangelika Karelinová", category: "Hodný", desc: "Lékárnice a obchodnice.", danger: "Žádná", loot: "-", tip: "Vždy pomůže." },
+{ name: "Starý Cetkář", category: "Hodný", desc: "Moudrý vůdce vesnice.", danger: "Žádná", loot: "-", tip: "Respektovaný starší." },
+{ name: "Sofie", category: "Neutrál", desc: "Bývalá vědkyně.", danger: "Nízká", loot: "-", tip: "Zachráněná." },
+{ name: "Ark", category: "Hodný", desc: "Tichý stratég a ochránce.", danger: "Žádná", loot: "-", tip: "Ochránce a taktický poradce." },
+{ name: "Vlk", category: "Hráč", desc: "Samotářský stalker, bývalý Spetsnaz.", danger: "Žádná", loot: "-", tip: "Výhody a slabiny", details: "Slabiny: Poraněné oko, nedůvěra, strach z vody. Výhody: Tichý zabiják, expert na munici, pasti, ostrostřelec." },
+{ name: "Viking", category: "Hráč", desc: "Lovec a přeživší, přirozený vůdce.", danger: "Žádná", loot: "-", tip: "Výhody a slabiny", details: "Slabiny: Nenávist k banditům, strach z vody. Výhody: Nezdolná vůle." },
+{ name: "Jurij", category: "Hráč", desc: "Přátelský kuchař a znalec přírody.", danger: "Žádná", loot: "-", tip: "Výhody a slabiny", details: "Slabiny: Při těle, pavouci, tma, cigarety. Výhody: Znalec rostlin." },
+{ name: "Diana", category: "Hráč", desc: "Odvážná zdravotnice.", danger: "Žádná", loot: "-", tip: "Výhody a slabiny", details: "Slabiny: Klaustrofobie, poškozený sluch, cigarety. Výhody: Anatomie, zbraně, povzbuzování." },
+{ name: "Kolja", category: "Hráč", desc: "Vynalézavý elektro-mechanik.", danger: "Žádná", loot: "-", tip: "Výhody a slabiny", details: "Slabiny: Zranění ramene, nedůvěra, izolace. Výhody: Inženýr, improvizátor, zbrojíř." },
+{ name: "Orákulum", category: "Neidentifikovatelné", desc: "Záhadná entita.", danger: "???", loot: "???", tip: "Nepředvídatelná." }
+];
+
+const container = document.getElementById('cardsContainer');
+
+data.forEach(entry => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `<h3>${entry.name}</h3>
+    <strong>Kategorie:</strong> ${entry.category}<br>
+    <strong>Nebezpečnost:</strong> ${entry.danger}<br>
+    <strong>Popis:</strong> ${entry.desc}<br>
+    <strong>Tip:</strong> ${entry.tip}<br>
+    ${entry.weapon ? `<strong>Zbraň:</strong> ${entry.weapon}<br>` : ''}
+    ${entry.details ? `<div class='details'><strong>Detailní info:</strong> ${entry.details}</div>` : ''}`;
+    card.addEventListener('click', () => card.classList.toggle('show'));
+    container.appendChild(card);
+});
+    </script>
+</body>
+</html>
